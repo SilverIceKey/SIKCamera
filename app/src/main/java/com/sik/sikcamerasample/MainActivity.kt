@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         CameraManager(this).apply {
             initialize {
+                setLensFacing(CameraSelector.LENS_FACING_FRONT)
                 bindCameraView(findViewById<BasicCameraView>(R.id.cameraView), this@MainActivity)
             }
         }

@@ -1,9 +1,12 @@
 package com.sik.sikcamera
 
 import android.content.Context
+import android.graphics.Matrix
 import android.util.AttributeSet
+import android.view.Surface
 import android.view.TextureView
 import androidx.camera.core.Preview
+import androidx.core.content.ContextCompat
 
 class BasicCameraView @JvmOverloads constructor(
     context: Context,
@@ -15,8 +18,8 @@ class BasicCameraView @JvmOverloads constructor(
         return Preview.SurfaceProvider { request ->
             val surfaceTexture = this.surfaceTexture
             surfaceTexture?.setDefaultBufferSize(width, height)
-            val surface = android.view.Surface(surfaceTexture)
-            request.provideSurface(surface, { it.run() }) { result ->
+            val surface = Surface(surfaceTexture)
+            request.provideSurface(surface, ContextCompat.getMainExecutor(context)) { result ->
                 // Handle surface result if needed
             }
         }

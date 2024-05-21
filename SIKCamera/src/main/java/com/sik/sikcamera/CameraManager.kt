@@ -2,6 +2,7 @@ package com.sik.sikcamera
 
 import android.content.Context
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraSelector.LensFacing
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -10,11 +11,17 @@ import androidx.lifecycle.LifecycleOwner
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+/**
+ * 摄像头管理器
+ */
 class CameraManager(private val context: Context) {
 
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var cameraExecutor: ExecutorService
     private val imageAnalyzers = mutableListOf<ImageAnalysis.Analyzer>()
+
+    @LensFacing
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
     fun initialize(initSuccess: () -> Unit) {
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -27,9 +34,17 @@ class CameraManager(private val context: Context) {
         }, ContextCompat.getMainExecutor(context))
     }
 
+    /**
+     * 设置摄像头
+     */
+    fun setLensFacing(@LensFacing lensFacing: Int): CameraManager {
+        this.lensFacing = lensFacing
+        return this
+    }
+
     fun bindCameraView(cameraView: CameraView, lifecycleOwner: LifecycleOwner) {
         val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .requireLensFacing(lensFacing)
             .build()
 
         val preview = Preview.Builder().build()
