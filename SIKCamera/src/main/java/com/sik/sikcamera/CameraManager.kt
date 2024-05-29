@@ -6,6 +6,7 @@ import androidx.camera.core.CameraSelector.LensFacing
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.util.concurrent.ExecutorService
@@ -49,11 +50,34 @@ class CameraManager(private val context: Context) {
 
         val preview = Preview.Builder().build()
         preview.setSurfaceProvider(cameraView.createSurfaceProvider())
-        val imageAnalysis = ImageAnalysis.Builder()
+        val imageAnalysis =
+            ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .build()
+        imageAnalysis.setAnalyzer(cameraExecutor) {
+            imageAnalyzers.forEach { analyzer ->
+                analyzer.analyze(it)
+            }
+            it.close()
+        }
+
+        cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
+    }
+
+    fun bindCameraView(cameraView: PreviewView, lifecycleOwner: LifecycleOwner) {
+        val cameraSelector = CameraSelector.Builder()
+            .requireLensFacing(lensFacing)
             .build()
 
-        imageAnalyzers.forEach { analyzer ->
-            imageAnalysis.setAnalyzer(cameraExecutor, analyzer)
+        val preview = Preview.Builder().build()
+        preview.setSurfaceProvider(cameraView.surfaceProvider)
+        val imageAnalysis =
+            ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+        imageAnalysis.setAnalyzer(cameraExecutor) {
+            imageAnalyzers.forEach { analyzer ->
+                analyzer.analyze(it)
+            }
+            it.close()
         }
 
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
@@ -68,10 +92,11 @@ class CameraManager(private val context: Context) {
     }
 
     fun shutdown() {
+        imageAnalyzers.clear()
         cameraExecutor.shutdown()
     }
 }
 
-interface CameraView {
+fun interface CameraView {
     fun createSurfaceProvider(): Preview.SurfaceProvider
 }

@@ -6,10 +6,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.sik.sikcamera.BasicCameraView
 import com.sik.sikcamera.CameraManager
 
 class MainActivity : AppCompatActivity() {
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         CameraManager(this).apply {
             initialize {
                 setLensFacing(CameraSelector.LENS_FACING_FRONT)
-                bindCameraView(findViewById<BasicCameraView>(R.id.cameraView), this@MainActivity)
+                bindCameraView(findViewById<PreviewView>(R.id.cameraView), this@MainActivity)
             }
         }
     }

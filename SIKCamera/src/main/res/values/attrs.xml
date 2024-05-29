@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="CameraPreviewView">
-        <attr name="cameraId" format="integer"/> <!-- 摄像头ID -->
-        <attr name="resolution" format="string"/> <!-- 分辨率 -->
-        <attr name="frameRate" format="integer"/> <!-- 帧率 -->
-    </declare-styleable>
-</resources>

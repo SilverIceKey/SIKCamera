@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
+apply {
+    from(rootProject.file("gradle/maven-publish.gradle"))
+}
+
 android {
     namespace = "com.sik.sikcamera"
     compileSdk = 34
