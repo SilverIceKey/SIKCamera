@@ -12,7 +12,7 @@
         tools:ignore="MissingConstraints"
         android:background="#FF0000">
 
-        <androidx.camera.view.PreviewView
+        <com.sik.sikcamera.BasicCameraView
             android:id="@+id/cameraView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
