@@ -1,11 +1,16 @@
 package com.sik.sikcamera
 
 import android.content.Context
+import android.util.Size
+import androidx.camera.core.CameraInfoUnavailableException
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LensFacing
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import java.util.concurrent.ExecutorService
@@ -49,14 +54,67 @@ class CameraManager(private val context: Context) {
 
         val preview = Preview.Builder().build()
         preview.setSurfaceProvider(cameraView.createSurfaceProvider())
-        val imageAnalysis = ImageAnalysis.Builder()
-            .build()
-
-        imageAnalyzers.forEach { analyzer ->
-            imageAnalysis.setAnalyzer(cameraExecutor, analyzer)
+        val imageAnalysis =
+            ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+        imageAnalysis.setAnalyzer(cameraExecutor) {
+            imageAnalyzers.forEach { analyzer ->
+                analyzer.analyze(it)
+            }
+            it.close()
         }
 
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
+    }
+
+    fun bindCameraView(cameraView: PreviewView, lifecycleOwner: LifecycleOwner) {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(cameraView.context)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+
+            var cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(lensFacing)
+                .build()
+
+            try {
+                // 检查设备上是否存在指定的镜头
+                cameraProvider.hasCamera(cameraSelector)
+            } catch (e: CameraInfoUnavailableException) {
+                // 如果指定的镜头不存在，则切换到另一镜头
+                cameraSelector = CameraSelector.Builder()
+                    .requireLensFacing(
+                        if (lensFacing == CameraSelector.LENS_FACING_FRONT)
+                            CameraSelector.LENS_FACING_BACK
+                        else
+                            CameraSelector.LENS_FACING_FRONT
+                    )
+                    .build()
+            }
+            val preview = Preview.Builder().build()
+            preview.setSurfaceProvider(cameraView.surfaceProvider)
+
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+            imageAnalysis.setAnalyzer(cameraExecutor) {
+                imageAnalyzers.forEach { analyzer ->
+                    analyzer.analyze(it)
+                }
+                it.close()
+            }
+
+            try {
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageAnalysis
+                )
+            } catch (exc: Exception) {
+                // 捕获绑定生命周期失败的异常
+                exc.printStackTrace()
+            }
+        }, ContextCompat.getMainExecutor(cameraView.context))
     }
 
     fun addImageAnalyzer(analyzer: ImageAnalysis.Analyzer) {
@@ -68,10 +126,11 @@ class CameraManager(private val context: Context) {
     }
 
     fun shutdown() {
+        imageAnalyzers.clear()
         cameraExecutor.shutdown()
     }
 }
 
-interface CameraView {
+fun interface CameraView {
     fun createSurfaceProvider(): Preview.SurfaceProvider
 }

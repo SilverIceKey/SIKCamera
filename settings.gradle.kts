@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "SIKCameraSample"
 include(":app")
 include(":SIKCamera")
+include(":SIKImageAnalysis")

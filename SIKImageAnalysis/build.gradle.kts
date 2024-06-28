@@ -1,15 +1,14 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("maven-publish")
 }
 
 android {
-    namespace = "com.sik.sikcamera"
+    namespace = "com.sik.sikimageanalysis"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -33,16 +32,6 @@ android {
     }
 }
 
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            afterEvaluate {
-                from(components["release"])
-            }
-        }
-    }
-}
-
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -52,9 +41,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-
     api("androidx.camera:camera-core:1.3.3")
-    api("androidx.camera:camera-camera2:1.3.3")
-    api("androidx.camera:camera-lifecycle:1.3.3")
-    api("androidx.camera:camera-view:1.3.3")
+    //MLKit 人脸检测
+    api("com.google.mlkit:face-detection:16.1.6")
 }
