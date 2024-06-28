@@ -57,4 +57,6 @@ dependencies {
     api("androidx.camera:camera-camera2:1.3.3")
     api("androidx.camera:camera-lifecycle:1.3.3")
     api("androidx.camera:camera-view:1.3.3")
+
+    compileOnly(project(":SIKImageAnalysis"))
 }

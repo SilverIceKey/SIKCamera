@@ -6,16 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:layout_width="904dp"
-        android:layout_height="599dp"
-        tools:ignore="MissingConstraints"
-        android:background="#FF0000">
+    <RelativeLayout
+        android:layout_width="400dp"
+        android:layout_height="300dp"
+        android:background="#FF0000"
+        tools:ignore="MissingConstraints">
 
-        <com.sik.sikcamera.BasicCameraView
+        <androidx.camera.view.PreviewView
             android:id="@+id/cameraView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.sik.sikimageanalysis.views.FaceOverlayView
+            android:id="@+id/faceOverlayView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/cameraView"
+            android:layout_alignLeft="@+id/cameraView"
+            android:layout_alignTop="@+id/cameraView"
+            android:layout_alignRight="@+id/cameraView"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

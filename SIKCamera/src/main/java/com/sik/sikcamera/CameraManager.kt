@@ -1,18 +1,17 @@
 package com.sik.sikcamera
 
 import android.content.Context
-import android.util.Size
 import androidx.camera.core.CameraInfoUnavailableException
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraSelector.LensFacing
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
-import androidx.camera.core.resolutionselector.ResolutionSelector
-import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.sik.sikimageanalysis.image_analysis.FaceDetectImageAnalysis
+import java.util.LinkedList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -23,7 +22,8 @@ class CameraManager(private val context: Context) {
 
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var cameraExecutor: ExecutorService
-    private val imageAnalyzers = mutableListOf<ImageAnalysis.Analyzer>()
+    private val imageAnalyzers = LinkedList<ImageAnalysis.Analyzer>()
+    private var isContainerFaceDetector: Boolean = false
 
     @LensFacing
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
@@ -59,9 +59,14 @@ class CameraManager(private val context: Context) {
                 .build()
         imageAnalysis.setAnalyzer(cameraExecutor) {
             imageAnalyzers.forEach { analyzer ->
+                if (analyzer is FaceDetectImageAnalysis){
+                    isContainerFaceDetector =  true
+                }
                 analyzer.analyze(it)
             }
-            it.close()
+            if (!isContainerFaceDetector){
+                it.close()
+            }
         }
 
         cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
@@ -98,9 +103,14 @@ class CameraManager(private val context: Context) {
                 .build()
             imageAnalysis.setAnalyzer(cameraExecutor) {
                 imageAnalyzers.forEach { analyzer ->
+                    if (analyzer is FaceDetectImageAnalysis){
+                        isContainerFaceDetector =  true
+                    }
                     analyzer.analyze(it)
                 }
-                it.close()
+                if (!isContainerFaceDetector){
+                    it.close()
+                }
             }
 
             try {

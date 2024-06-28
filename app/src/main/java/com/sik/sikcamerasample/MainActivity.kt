@@ -6,11 +6,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.sik.sikcamera.BasicCameraView
 import com.sik.sikcamera.CameraManager
+import com.sik.sikimageanalysis.image_analysis.FaceDetectImageAnalysis
 
 class MainActivity : AppCompatActivity() {
     // 请求相机权限的 Launcher
@@ -50,7 +51,16 @@ class MainActivity : AppCompatActivity() {
         CameraManager(this).apply {
             initialize {
                 setLensFacing(CameraSelector.LENS_FACING_FRONT)
-                bindCameraView(findViewById<BasicCameraView>(R.id.cameraView), this@MainActivity)
+                addImageAnalyzer(
+                    FaceDetectImageAnalysis(
+                        drawBoundingBox = true,
+                        faceOverlayView = findViewById(R.id.faceOverlayView)
+                    ).apply {
+                        onFaceDetectSuccess = { _, imageProxy -> imageProxy.close() }
+                        onFaceDetectFailure = { _, imageProxy -> imageProxy.close() }
+                    }
+                )
+                bindCameraView(findViewById<PreviewView>(R.id.cameraView), this@MainActivity)
             }
         }
     }
