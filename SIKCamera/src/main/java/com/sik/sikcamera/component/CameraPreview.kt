@@ -9,7 +9,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.sik.sikcamera.CameraManager
 
 @Composable
-fun CameraPreview(modifier: Modifier) {
+fun CameraPreview(
+    modifier: Modifier,
+    useCameraManager: CameraManager.() -> Unit = {}
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -18,6 +21,7 @@ fun CameraPreview(modifier: Modifier) {
             val previewView = PreviewView(ctx)
             CameraManager(context).apply {
                 initialize { }
+                useCameraManager(this)
                 bindCameraView(previewView, lifecycleOwner)
             }
             previewView
