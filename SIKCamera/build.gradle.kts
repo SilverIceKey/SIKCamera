@@ -31,17 +31,28 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 publishing {
     publications {
+
         register<MavenPublication>("release") {
             afterEvaluate {
                 from(components["release"])
+                groupId = project.findProperty("GROUP_ID") as String // 使用 GROUP_ID 属性
+                artifactId = "SIKCamera"
+                version = project.findProperty("VERSION") as String // 使用 VERSION_NAME 属性
             }
         }
     }
 }
+
 
 dependencies {
 
@@ -52,11 +63,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling)
 
-    api("androidx.camera:camera-core:1.3.3")
-    api("androidx.camera:camera-camera2:1.3.3")
-    api("androidx.camera:camera-lifecycle:1.3.3")
-    api("androidx.camera:camera-view:1.3.3")
+    api(libs.camerax.core)
+    api(libs.camerax.camera2)
+    api(libs.camerax.lifecycle)
+    api(libs.camerax.view)
 
     compileOnly(project(":SIKImageAnalysis"))
 }

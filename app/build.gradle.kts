@@ -33,15 +33,29 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+
+    api(libs.androidx.activity.compose)
+    api(libs.androidx.compose.foundation)
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.ui)
+    api(libs.androidx.ui.graphics)
+    api(libs.androidx.runtime.livedata)
+
     implementation(project(":SIKCamera"))
     implementation(project(":SIKImageAnalysis"))
     testImplementation(libs.junit)
