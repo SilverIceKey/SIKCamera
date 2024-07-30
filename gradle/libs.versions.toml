@@ -15,6 +15,7 @@ mlkit_face_detection_version = "16.1.6"
 material3Android = "1.2.1"
 composeBom = "2024.06.00"
 runtimeLivedata = "1.6.7"
+sik_extensions = "1.0.74"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ camerax-mlkit-vision = { group = "androidx.camera", name = "camera-mlkit-vision"
 mlkit-face-detection = { group = "com.google.mlkit", name = "face-detection", version.ref = "mlkit_face_detection_version" }
 camerax-extensions = { group = "androidx.camera", name = "camera-extensions", version.ref = "camerax_version" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+sik-extensions-images = { group = "com.github.SilverIceKey.SIKExtension", name = "SIKImage", version.ref = "sik_extensions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

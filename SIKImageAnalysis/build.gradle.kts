@@ -57,4 +57,5 @@ dependencies {
     api(libs.camerax.core)
     api(libs.camerax.extensions)
     api(libs.mlkit.face.detection)
+    implementation(libs.sik.extensions.images)
 }
