@@ -15,7 +15,7 @@ mlkit_face_detection_version = "16.1.6"
 material3Android = "1.2.1"
 composeBom = "2024.06.00"
 runtimeLivedata = "1.6.7"
-sik_extensions = "1.0.92"
+sik_extensions = "1.0.93"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
