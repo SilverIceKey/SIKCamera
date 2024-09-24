@@ -8,6 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: badasintended/autojitpack@v1
+      - name: Auto Jitpack Build
+        uses: badasintended/autojitpack@v1
         with:
           version: ${{ github.event.release.tag_name }}
