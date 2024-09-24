@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -57,5 +57,5 @@ dependencies {
     api(libs.camerax.core)
     api(libs.camerax.extensions)
     api(libs.mlkit.face.detection)
-    implementation(libs.sik.extensions.images)
+    api(libs.sik.extensions.images)
 }

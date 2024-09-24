@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sik.sikcamerasample"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -54,8 +54,10 @@ dependencies {
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.ui)
     api(libs.androidx.ui.graphics)
+    api(libs.androidx.material3.android)
     api(libs.androidx.runtime.livedata)
 
+    implementation(libs.sik.extensions.core)
     implementation(project(":SIKCamera"))
     implementation(project(":SIKImageAnalysis"))
     testImplementation(libs.junit)

@@ -6,11 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.sik.sikcamera.component.CameraPreview
+import com.sik.sikcore.data.ConvertUtils
+import com.sik.sikcore.log.LogUtils
+import com.sik.sikimageanalysis.image_analysis.QrCodeAnalysis
 
 class MainActivity : ComponentActivity() {
+    private val logger = LogUtils.getLogger(MainActivity::class)
+
     // 请求相机权限的 Launcher
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -27,8 +39,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Column {
-                CameraPreview(modifier = Modifier.fillMaxWidth())
+            var message by remember {
+                mutableStateOf("")
+            }
+            Column(modifier = Modifier.fillMaxSize()) {
+                CameraPreview(modifier = Modifier.fillMaxWidth()) {
+                    addImageAnalyzer(QrCodeAnalysis {
+                        if (message.length < 728) {
+                            val resultRawBytes = it.toByteArray(Charsets.ISO_8859_1)
+                            logger.i("${resultRawBytes.size}")
+                            message = ConvertUtils.bytesToHex(resultRawBytes)
+                            logger.i(message)
+                        }
+                    })
+                }
+                Text(
+                    text = message, modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    color = Color.Green
+                )
             }
         }
     }
