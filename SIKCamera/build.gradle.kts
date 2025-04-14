@@ -74,5 +74,11 @@ dependencies {
     api(libs.camerax.lifecycle)
     api(libs.camerax.view)
 
+    api(libs.guava)
+    // To use CallbackToFutureAdapter
+    api(libs.androidx.concurrent.futures)
+    // Kotlin
+    api(libs.kotlinx.coroutines.guava)
+
     compileOnly(project(":SIKImageAnalysis"))
 }
