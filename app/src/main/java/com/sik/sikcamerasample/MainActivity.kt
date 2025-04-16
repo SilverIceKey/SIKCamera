@@ -17,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.sik.sikcamera.component.CameraPreview
 import com.sik.sikcore.data.ConvertUtils
-import com.sik.sikcore.log.LogUtils
 import com.sik.sikimageanalysis.image_analysis.QrCodeAnalysis
+import org.slf4j.LoggerFactory
 
 class MainActivity : ComponentActivity() {
-    private val logger = LogUtils.getLogger(MainActivity::class)
+    private val logger = LoggerFactory.getLogger(MainActivity::class.java)
 
     // 请求相机权限的 Launcher
     private val requestPermissionLauncher =
@@ -47,9 +47,9 @@ class MainActivity : ComponentActivity() {
                     addImageAnalyzer(QrCodeAnalysis {
                         if (message.length < 728) {
                             val resultRawBytes = it.toByteArray(Charsets.ISO_8859_1)
-                            logger.i("${resultRawBytes.size}")
+                            logger.info("${resultRawBytes.size}")
                             message = ConvertUtils.bytesToHex(resultRawBytes)
-                            logger.i(message)
+                            logger.info(message)
                         }
                     })
                 }
